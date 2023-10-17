@@ -1,4 +1,7 @@
 "use strict";
+
+//Test word for pushing in git
+
 //New Words :
 //obtain - получать
 //fetch - приносить
