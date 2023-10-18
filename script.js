@@ -31,24 +31,28 @@
 //First - callback while success (Have 1 parameter - Position Parameter)
 //Second - Error Callback, called by error getting coordinates
 
-
-
 //Classes Structure
 class Workout {
   //class Fields
 
   date = new Date();
   id = (Date.now() + ``).slice(-10);
+  clicks = 0;
+
   constructor(coords, distance, duration) {
     this.coords = coords; // [lat,long]
     this.distance = distance; // in km
     this.duration = duration; // in min
-  
   }
-  _setDescription(){
-    // prettier-ignore 
-const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-    this.description= `${this.type[0].toUpperCase()}${this.type.slice(1)} on ${months[this.date.getMonth()]} ${this.date.getDate()}`;
+  _setDescription() {
+    // prettier-ignore
+    const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    this.description = `${this.type[0].toUpperCase()}${this.type.slice(1)} on ${
+      months[this.date.getMonth()]
+    } ${this.date.getDate()}`;
+  }
+  click() {
+    this.clicks++;
   }
 }
 class Running extends Workout {
@@ -101,6 +105,7 @@ const inputElevation = document.querySelector(".form__input--elevation");
 class App {
   #map;
   #mapEvent;
+  #mapZoomLvl = 13;
   #workouts = [];
 
   constructor() {
@@ -113,6 +118,8 @@ class App {
     form.addEventListener(`submit`, this._newWorkout.bind(this));
     //Switching Input Fields while changing the Type of Input-Data
     inputType.addEventListener(`change`, this._toggleElevationField);
+
+    containerWorkouts.addEventListener(`click`, this._moveToPopup.bind(this));
   }
 
   //Geolocation API
@@ -135,7 +142,7 @@ class App {
     console.log(`https://www.google.de/maps/@${latitude},${longitude}`);
     // console.log(`https://www.google.de/maps/@${52.4929552},${13.4570545},14z?entry=ttu`);
     const coords = [latitude, longitude];
-    this.#map = L.map("map").setView(coords, 13);
+    this.#map = L.map("map").setView(coords, this.#mapZoomLvl);
     // console.log(map);
 
     L.tileLayer("https://tile.openstreetmap.fr/hot/{z}/{x}/{y}.png", {
@@ -160,12 +167,16 @@ class App {
     //Makink this part of Form PREselected after rendering
     inputDistance.focus();
   }
-  _hideForm(){
+  _hideForm() {
     //Empty Inputs
-    inputDistance.value=inputDuration.value=inputCadence.value=inputElevation.value=` `;
+    inputDistance.value =
+      inputDuration.value =
+      inputCadence.value =
+      inputElevation.value =
+        ` `;
 
     //Important ! Setting display-property to none, makes ANIMATION not triggered on this object
-    form.style.display=`none`;
+    form.style.display = `none`;
     form.classList.add(`hidden`);
     setTimeout(() => {
       form.style.display = `grid`;
@@ -233,7 +244,6 @@ class App {
     //6. Render Workout on the list
     this._renderWorkout(workout);
 
-
     //7. Hide Form + clear input Fields
     //Clear input fields
     this._hideForm();
@@ -254,15 +264,19 @@ class App {
           className: `${workout.type}-popup`,
         })
       )
-      .setPopupContent(`${workout.type === `running` ? `🏃‍♂️` : `🚴‍♀️`} ${workout.description}`)
+      .setPopupContent(
+        `${workout.type === `running` ? `🏃‍♂️` : `🚴‍♀️`} ${workout.description}`
+      )
       .openPopup();
   }
-  _renderWorkout(workout){
+  _renderWorkout(workout) {
     let html = `
       <li class="workout workout--${workout.type}" data-id="${workout.id}">
       <h2 class="workout__title">${workout.description}</h2>
       <div class="workout__details">
-        <span class="workout__icon">${workout.type === `running` ? `🏃‍♂️` : `🚴‍♀️`}</span>
+        <span class="workout__icon">${
+          workout.type === `running` ? `🏃‍♂️` : `🚴‍♀️`
+        }</span>
         <span class="workout__value">${workout.distance}</span>
         <span class="workout__unit">km</span>
       </div>
@@ -272,8 +286,8 @@ class App {
         <span class="workout__unit">min</span>
       </div>
     `;
-    if(workout.type === `running`){
-      html+= `
+    if (workout.type === `running`) {
+      html += `
       <div class="workout__details">
             <span class="workout__icon">⚡️</span>
             <span class="workout__value">${workout.pace.toFixed(1)}</span>
@@ -287,7 +301,7 @@ class App {
         </li>
       `;
     }
-    if(workout.type === `cycling`){
+    if (workout.type === `cycling`) {
       html += `
         <div class="workout__details">
           <span class="workout__icon">⚡️</span>
@@ -302,7 +316,29 @@ class App {
         </li>
       `;
     }
-    form.insertAdjacentHTML(`afterend`,html)
+    form.insertAdjacentHTML(`afterend`, html);
+  }
+  _moveToPopup(e) {
+    //.closest() - link to the nearest Object with selected class
+    //After it with unique ID of training-Element it can be found in Data array
+    const workoutEl = e.target.closest(`.workout`);
+    console.log(workoutEl);
+    if (!workoutEl) return;
+
+    const workout = this.#workouts.find(
+      (work) => work.id === workoutEl.dataset.id
+    );
+    console.log(workout);
+
+    //.setView() - sets the position of the screen centered on selected Object. 1par. - Coords, 2par. - lvl of zooming, 3par - add. setting like animation etc.
+    this.#map.setView(workout.coords, this.#mapZoomLvl, {
+      animate: true,
+      pan: {
+        duration: 1,
+      },
+    });
+    //Using the public interface
+    workout.click();
   }
 }
 const app = new App();
