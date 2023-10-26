@@ -12,6 +12,7 @@
 //altitude - высота
 //concerned - связанный
 //approach - подход
+//glimpse - проблеск, намек
 
 //1 Planning:
 //1.1 User story (High level overview)
@@ -110,7 +111,11 @@ class App {
 
   constructor() {
     //This line of code allow to call this Method immediately, when the page loads.
+    //Get users position
     this._getPosition();
+
+    //Get data from local storage, if any data is avaible. 
+    this._getLocalStorage();
 
     //form Listners
 
@@ -159,6 +164,11 @@ class App {
 
     //Handling clicks on map
     this.#map.on(`click`, this._showForm.bind(this));
+
+    //This part of code should be here because of not avaiable of map-var. in _setLocalStorage
+    this.#workouts.forEach(work =>{
+      this._renderWorkout(work);
+    })
   }
 
   _showForm(mapE) {
@@ -247,6 +257,9 @@ class App {
     //7. Hide Form + clear input Fields
     //Clear input fields
     this._hideForm();
+
+    //8. Store the data in local Storage 
+    this._setLocalStorage(); 
   }
   _renderWorkoutMarker(workout) {
     //Display marker
@@ -338,7 +351,32 @@ class App {
       },
     });
     //Using the public interface
-    workout.click();
+    // workout.click();
+  }
+  _setLocalStorage(){
+    //There are a local-storage API, that are provided by the browser. (localStorage).
+    //Only for SMALL amount of DATA
+    
+    //1Par. - key/name of setted variable, 2Par. - value setted as a STRING . 
+    //JSON.stringify() - convert object to string 
+    localStorage.setItem(`workout`,JSON.stringify(this.#workouts));
+  };
+  _getLocalStorage(){
+  //When converting Object -> String = Loosing of Prototype Chain!
+  
+    //JSON.parse() - convert STRING to OBJECT
+    const data = JSON.parse(localStorage.getItem(`workout`));
+
+    if(!data) return;
+
+    //Normally there is no data while first loading. After it, all the data will be stored in local storage.
+    this.#workouts = data;
+   
+  }
+  reset(){
+    //Method for deleting of local storage data 
+    localStorage.removeItem(`workouts`);
+    location.reload();
   }
 }
 const app = new App();
