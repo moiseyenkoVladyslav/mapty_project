@@ -167,7 +167,7 @@ class App {
 
     //This part of code should be here because of not avaiable of map-var. in _setLocalStorage
     this.#workouts.forEach(work =>{
-      this._renderWorkout(work);
+      this._renderWorkoutMarker(work);
     })
   }
 
@@ -372,10 +372,13 @@ class App {
     //Normally there is no data while first loading. After it, all the data will be stored in local storage.
     this.#workouts = data;
    
+    this.#workouts.forEach(work =>{
+      this._renderWorkout(work);
+    })
   }
   reset(){
     //Method for deleting of local storage data 
-    localStorage.removeItem(`workouts`);
+    localStorage.removeItem(`workout`);
     location.reload();
   }
 }
@@ -390,3 +393,23 @@ const app = new App();
 //MAIN Question : Where and How to store the Data!
 //-> Use Classes and Class Inheritance for store data
 //-> Using classes to store Data(raw) + Class for storing Methods, which be used to work with Data and also  Stored the result of operation. So second class provide encapsulation of private Data and MEthods
+
+
+
+
+//Challenges: 
+//
+//1. Edit Workout
+//2. Delete Workout
+//3. Delete all Workouts
+//4. Sort Workouts by Distanca or 
+//5. Rebuild Object from local Storage
+//6. More realistic error messeage
+
+//Hard: 
+//1. Abbility to show all Workouts on the map 
+//2. Abbility to draw lines and shapes instead of just points
+
+//After Async JS: 
+//1. Geocode locations grom coordinates
+//2.Display weather data for workout time and place 
