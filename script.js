@@ -123,8 +123,9 @@ class App {
     inputType.addEventListener(`change`, this._toggleElevationField);
 
     containerWorkouts.addEventListener(`click`, this._moveToPopup.bind(this));
-    const formEdit = document.querySelectorAll(".workout__edit");
+    const formEdit = document.querySelectorAll(".workout__edit-content");
     console.log(formEdit);
+    formEdit[0].addEventListener(`click`, x=>console.log(`clicked`));
     // formEdit.addEventListener(`click`, function () {
     //   console.log(`clicked`);
     // });
@@ -290,7 +291,7 @@ class App {
     let html = `
       <li class="workout workout--${workout.type}" data-id="${workout.id}">
       <h2 class="workout__title">${workout.description}</h2>
-      <div class="workout__edit">x</div>
+      <div class="workout__edit"><span class="workout__edit-content">x</span></div>
       <div class="workout__details">
         <span class="workout__icon">${
           workout.type === `running` ? `🏃‍♂️` : `🚴‍♀️`

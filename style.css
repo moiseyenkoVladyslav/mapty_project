@@ -90,14 +90,21 @@ a:visited {
   grid-column: 1 / -2;
 }
 .workout__edit {
-  font-size: 1.7rem;
-  font-weight: 600;
   grid-column: -2 / -1;
   display: flex;
   justify-content: end;
   align-content: start;
 }
-
+.workout__edit-content{
+  font-size: 1.8rem;
+  font-weight: 600;
+}
+/*Problem*/
+.workout__edit-content:hover{
+  /*Why not font-style, but color property */
+  font-style: var(--color-brand--1);
+  color: #ffb545;
+}
 .workout__details {
   display: flex;
   align-items: baseline;
