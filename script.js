@@ -125,7 +125,7 @@ class App {
     containerWorkouts.addEventListener(`click`, this._moveToPopup.bind(this));
     const formEdit = document.querySelectorAll(".workout__edit-content");
     console.log(formEdit);
-    formEdit[0].addEventListener(`click`, x=>console.log(`clicked`));
+    formEdit[0].addEventListener(`click`, this._showEditForm.bind(this));
     // formEdit.addEventListener(`click`, function () {
     //   console.log(`clicked`);
     // });
@@ -265,7 +265,121 @@ class App {
     //8. Store the data in local Storage
     this._setLocalStorage();
   }
-  _editForm() {}
+  _showEditForm(e) {
+    // 1. Есть в workouts нужный мне воркаут
+    // 2. получить нужный мне воркаут
+    // 3. взять данные из form - ПЛОХОЙ МЕТОД, заполнение обычного form вызовет срабатывание _newWorkout()
+    // 3.1 Скрыть выбранный workout
+    // 3.2 Сделать новое окно для Редактировния Воркаут
+    // 3.3 Показать НОВОЕ окно для редактирование workout
+    // 4. записать полученные данные из форм в нужный воркаут из workauts
+
+    // 1-2 Поиск нужного мне воркаута
+    const workoutEl = e.target.closest(`.workout`);
+    if (!workoutEl) return;
+
+    const workout = this.#workouts.find(
+      (work) => work.id === workoutEl.dataset.id
+    );
+
+    // this._showForm();
+
+    //3.2
+    let html = `
+      <li class="workout workout--${workout.type} workout--${
+      workout.type
+    }__edit" data-id="${workout.id}">
+      <h2 class="workout__title">${workout.description}</h2>
+      <div class="workout__edit"><span class="workout__edit-content">x</span></div>
+      <div class="workout__details">
+        <label class="workout__icon">${
+          workout.type === `running` ? `🏃‍♂️` : `🚴‍♀️`
+        }</label>
+        <input class="form__input--edit form__input--edit-distance" placeholder="${
+          workout.distance
+        } km">
+       
+      </div>
+      <div class="workout__details">
+        <label class="workout__icon">⏱</label>
+        <input class="form__input--edit form__input--edit-duration" placeholder="${
+          workout.duration
+        } min">
+        
+      </div>
+    `;
+    if (workout.type === `running`) {
+      html += `
+      <div class="workout__details">
+            <label class="workout__icon">⚡️</label>
+            <input id="placeholder__pace" class="form__input--edit form__input--edit-pace" placeholder="${workout.pace.toFixed(
+              1
+            )} min/km">
+            
+          </div>
+          <div class="workout__details">
+            <label class="workout__icon">🦶🏼</label>
+            <input class="form__input--edit form__input--edit-cadence" placeholder="${
+              workout.cadence
+            } spm">
+            
+          </div>
+        </li>
+      `;
+    }
+    if (workout.type === `cycling`) {
+      html += `
+        <div class="workout__details">
+          <label class="workout__icon">⚡️</label>
+          <input class="form__input--edit form__input--edit-speed" placeholder="${workout.speed.toFixed(
+            1
+          )} km/h">
+          
+        </div>
+        <div class="workout__details">
+          <span class="workout__icon">⛰</span>
+          <input class="form__input form__input--edit form__input--edit-elevationGane" placeholder="${
+            workout.elevationGane
+          } m">
+          </div>
+        </li>
+      `;
+    }
+    //3.3
+    form.insertAdjacentHTML(`afterend`, html);
+
+    //Method for adjusting an input size to fit placeholder content
+    const inputPlaceholderEdit =
+      document.querySelectorAll(".form__input--edit");
+    inputPlaceholderEdit.forEach((input) => {
+      input.setAttribute("size", input.getAttribute("placeholder").length);
+      console.log(`done`, input);
+    });
+
+    //3.1
+    workoutEl.classList.add(`hidden`);
+
+    //4.
+    const inputDistanceEdit = document.querySelector(
+      ".form__input--edit-distance"
+    );
+    const inputDurationEdit = document.querySelector(
+      ".form__input--edit-duration"
+    );
+    const inputCadenceEdit = document.querySelector(
+      ".form__input--edit-cadence"
+    );
+
+    const distanceEdit = +inputDistanceEdit.value;
+    const durationEdit = +inputDurationEdit.value;
+    const cadenceEdit = +inputCadenceEdit.value;
+
+    workout.distance = distanceEdit;
+    workout.duration = durationEdit;
+    workout.cadence = cadenceEdit;
+
+    console.log(this.#workouts);
+  }
   _renderWorkoutMarker(workout) {
     //Display marker
 

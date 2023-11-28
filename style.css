@@ -95,12 +95,12 @@ a:visited {
   justify-content: end;
   align-content: start;
 }
-.workout__edit-content{
+.workout__edit-content {
   font-size: 1.8rem;
   font-weight: 600;
 }
 /*Problem*/
-.workout__edit-content:hover{
+.workout__edit-content:hover {
   /*Why not font-style, but color property */
   font-style: var(--color-brand--1);
   color: #ffb545;
@@ -150,6 +150,13 @@ a:visited {
   margin-bottom: 0;
   opacity: 0;
 }
+.workout.hidden {
+  transform: translateY(-30rem);
+  height: 0;
+  padding: 0 2.25rem;
+  margin-bottom: 0;
+  opacity: 0;
+}
 
 .form__row {
   display: flex;
@@ -171,6 +178,15 @@ a:visited {
   padding: 0.3rem 1.1rem;
   font-family: inherit;
   font-size: 1.4rem;
+  border: none;
+  border-radius: 3px;
+  background-color: var(--color-light--3);
+  transition: all 0.2s;
+}
+.form__input--edit {
+  padding: 0.1rem 1rem;
+  font-family: inherit;
+  font-size: 1.2rem;
   border: none;
   border-radius: 3px;
   background-color: var(--color-light--3);
