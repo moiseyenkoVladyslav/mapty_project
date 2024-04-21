@@ -2,6 +2,8 @@
 Mapty project is a project where Geolocation API, OOP, external Libraries, local Storage are used to build the website where u can put your porgress in training on the map. 
 This Project is part of Online Course The Complete JavaScript Course 2024: From Zero to Expert! from Jonas Schmedtmann. 
 
+Demo: https://mapty-project-alpha.vercel.app/
+
 ## Installing 
 1. Load the repository to your local machine
 2. Use local dev. server (like npm Live Server) for hacking the project.
